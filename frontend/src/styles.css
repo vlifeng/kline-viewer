@@ -1,0 +1,15 @@
+:root { --bg:#0d1117; --panel:#161b22; --border:#30363d; --fg:#c9d1d9; --muted:#8b949e; --accent:#2f81f7; }
+* { box-sizing: border-box; }
+html, body, #root { margin:0; height:100%; background:var(--bg); color:var(--fg); font:13px/1.4 -apple-system,Segoe UI,Roboto,sans-serif; }
+#root { display:flex; flex-direction:column; }
+header { display:flex; align-items:center; gap:16px; padding:8px 14px; border-bottom:1px solid var(--border); background:var(--panel); }
+header h1 { font-size:15px; margin:0; font-weight:600; }
+.btns button { background:transparent; color:var(--fg); border:1px solid var(--border); padding:4px 12px; margin-right:-1px; cursor:pointer; font:inherit; }
+.btns button:first-child { border-radius:4px 0 0 4px; } .btns button:last-child { border-radius:0 4px 4px 0; margin-right:0; }
+.btns button.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+#status { margin-left:auto; color:var(--muted); }
+main { flex:1; display:flex; flex-direction:column; min-height:0; }
+.pane { flex:1; position:relative; min-height:0; border-bottom:1px solid var(--border); }
+.pane .chart { position:absolute; inset:0; }
+.pane .label { position:absolute; z-index:5; left:10px; top:6px; font-weight:600; pointer-events:none; text-shadow:0 0 4px #000; }
+.pane .label span { font-weight:400; color:var(--muted); margin-left:8px; }
