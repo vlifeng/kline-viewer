@@ -1,48 +1,50 @@
-name: Deploy frontend to GitHub Pages
+name: Deploy GitHub Pages
+
 on:
   push:
     branches: [main]
-    paths: ["frontend/**", ".github/workflows/deploy.yml"]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm install
-      - name: Build
-        run: npm run build
-        env:
-          # Project site path, e.g. /kline-viewer/  (set repo variable VITE_BASE to override)
-          VITE_BASE: ${{ vars.VITE_BASE || format('/{0}/', github.event.repository.name) }}
-          # Public https URL of the API (set repo variable VITE_API_BASE)
-          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: frontend/dist
-
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install
+        working-directory: frontend
+        run: npm install
+
+      - name: Build
+        working-directory: frontend
+        env:
+          VITE_BASE: /kline-viewer/
+          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+        run: npm run build
+
+      - name: Deploy to gh-pages
+        working-directory: frontend/dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git init
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          touch .nojekyll
+          git add -A
+          git commit -m "Deploy kline viewer to GitHub Pages"
+          git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:gh-pages
