@@ -33,7 +33,7 @@ jobs:
         env:
           VITE_BASE: /kline-viewer/
           # repo variable VITE_API_BASE overrides; fallback is the current quick tunnel
-          VITE_API_BASE: ${{ vars.VITE_API_BASE || 'https://kid-evolution-latinas-varieties.trycloudflare.com' }}
+          VITE_API_BASE: ${{ vars.VITE_API_BASE || 'https://nine-hosting-novel-released.trycloudflare.com' }}
         run: npm run build
 
       - name: Deploy to gh-pages
